@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Outer Cybernetic Halo / Eclipse ring -->
+    <path
+        android:pathData="M54,20 A34,34 0 0,1 88,54 A34,34 0 0,1 54,88 A34,34 0 0,1 20,54 A34,34 0 0,1 54,20"
+        android:strokeWidth="1.5"
+        android:strokeColor="#55FF1744"
+        android:strokeLineCap="round" />
+
+    <!-- Dragon Slayer blade / central Brand spine -->
+    <path
+        android:pathData="M54,18 L55.5,50 L57,84 L54,90 L51,84 L52.5,50 Z"
+        android:fillColor="#FF1744" />
+    <path
+        android:pathData="M54,18 L54,90"
+        android:strokeWidth="1.2"
+        android:strokeColor="#FFFFFF" />
+
+    <!-- Top V-horns of the Brand -->
+    <path
+        android:pathData="M34,26 L54,42 L74,26"
+        android:strokeWidth="3.6"
+        android:strokeColor="#FF1744"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Middle Crossing Diagonals of the Brand -->
+    <path
+        android:pathData="M32,46 L54,34 L76,46 L54,64 L32,46"
+        android:strokeWidth="3.2"
+        android:strokeColor="#FF3D00"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Lower Diagonals / Brand hooks -->
+    <path
+        android:pathData="M35,76 L54,62 L73,76"
+        android:strokeWidth="3.6"
+        android:strokeColor="#FF1744"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Cyber Circuit Nodes -->
+    <path
+        android:pathData="M34,26 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#FF8A80" />
+    <path
+        android:pathData="M74,26 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#FF8A80" />
+    <path
+        android:pathData="M35,76 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#FF8A80" />
+    <path
+        android:pathData="M73,76 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#FF8A80" />
+    <path
+        android:pathData="M54,54 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0"
+        android:fillColor="#FFFFFF" />
+        
+    <!-- Glowing core accent -->
+    <path
+        android:pathData="M46,54 L54,46 L62,54 L54,62 Z"
+        android:strokeWidth="1.2"
+        android:strokeColor="#FFCDD2" />
+</vector>

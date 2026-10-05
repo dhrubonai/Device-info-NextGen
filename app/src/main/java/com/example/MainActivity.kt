@@ -85,7 +85,8 @@ class MainActivity : ComponentActivity() {
                                 BerserkTopAppBar(
                                     selectedTab = selectedTab,
                                     onRefresh = { viewModel.refreshAll() },
-                                    onShare = { viewModel.shareReport() }
+                                    onShare = { viewModel.shareReport() },
+                                    onOpenAppInfo = { viewModel.selectTab(NavTab.APP_INFO) }
                                 )
                             },
                             bottomBar = {
@@ -172,6 +173,9 @@ class MainActivity : ComponentActivity() {
                                             },
                                             onShareReport = { viewModel.shareReport() }
                                         )
+                                        NavTab.APP_INFO -> AppInfoScreen(
+                                            onCopy = { label, text -> viewModel.copyToClipboard(label, text) }
+                                        )
                                     }
                                 }
                             }
@@ -187,7 +191,8 @@ class MainActivity : ComponentActivity() {
 private fun BerserkTopAppBar(
     selectedTab: NavTab,
     onRefresh: () -> Unit,
-    onShare: () -> Unit
+    onShare: () -> Unit,
+    onOpenAppInfo: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -196,12 +201,14 @@ private fun BerserkTopAppBar(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // App Logo icon from user's provided artwork
+        // App Logo icon from user's provided artwork - clickable to open Developer & App Info
         Box(
             modifier = Modifier
                 .size(38.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color.Black),
+                .background(Color.Black)
+                .clickable { onOpenAppInfo() }
+                .testTag("app_logo_btn"),
             contentAlignment = Alignment.Center
         ) {
             Image(

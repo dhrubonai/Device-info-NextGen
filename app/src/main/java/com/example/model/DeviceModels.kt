@@ -175,5 +175,6 @@ enum class NavTab(val title: String, val subtitle: String) {
     NETWORK("Hawk Comms", "Network & WiFi"),
     SYSTEM("Brand of Fate", "OS & Security"),
     TESTS("Berserk Trial", "Hardware Diagnostics"),
-    REPORT("Sacrifice Tome", "Export Diagnostics")
+    REPORT("Sacrifice Tome", "Export Diagnostics"),
+    APP_INFO("Sacred Codex", "App & Developer Info")
 }

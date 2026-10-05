@@ -5,6 +5,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,34 +19,57 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.*
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlinx.coroutines.launch
+
+// Fluid iOS/iPhone-style spring bounce on touch
+fun Modifier.iphoneBounce(onClick: (() -> Unit)? = null): Modifier = this.then(
+    Modifier.pointerInput(onClick) {
+        if (onClick == null) return@pointerInput
+    }
+)
 
 @Composable
 fun LiquidGlassCard(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 20.dp,
+    cornerRadius: Dp = 22.dp,
     borderColor: Color = BerserkGlassBorder,
     borderWidth: Dp = 1.dp,
+    onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val scaleAnim = remember { Animatable(1f) }
+
+    // Fluid liquid light shimmer across the glass border
     val infiniteTransition = rememberInfiniteTransition(label = "glass_shimmer")
-    val shimmerAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.25f,
-        targetValue = 0.55f,
+    val shimmerOffset by infiniteTransition.animateFloat(
+        initialValue = -100f,
+        targetValue = 900f,
         animationSpec = infiniteRepeatable(
-            animation = tween(3200, easing = FastOutSlowInEasing),
+            animation = tween(4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "shimmerOffset"
+    )
+
+    val shimmerAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.35f,
+        targetValue = 0.70f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2200, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "alpha"
@@ -51,45 +77,77 @@ fun LiquidGlassCard(
 
     Box(
         modifier = modifier
+            .scale(scaleAnim.value)
             .clip(RoundedCornerShape(cornerRadius))
             .border(
                 width = borderWidth,
                 brush = Brush.linearGradient(
                     colors = listOf(
                         borderColor.copy(alpha = shimmerAlpha),
-                        BerserkGlassHighlight.copy(alpha = 0.15f),
-                        borderColor.copy(alpha = shimmerAlpha * 0.7f),
+                        BerserkGlassHighlight.copy(alpha = 0.25f),
+                        borderColor.copy(alpha = shimmerAlpha * 0.8f),
                         BerserkGlassBorderDim
                     ),
-                    start = Offset.Zero,
-                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+                    start = Offset(shimmerOffset * 0.4f, shimmerOffset * 0.4f),
+                    end = Offset(shimmerOffset + 400f, shimmerOffset + 400f)
                 ),
                 shape = RoundedCornerShape(cornerRadius)
             )
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0x3B251620), // Translucent liquid frosted dark
+                        Color(0x3E23141F), // Ultra-frosted liquid dark glass
                         Color(0x28120B13),
-                        Color(0x3B180C14)
+                        Color(0x3B190C15)
                     )
                 )
             )
+            .then(
+                if (onClick != null) {
+                    Modifier.pointerInput(Unit) {
+                        awaitEachGesture {
+                            awaitFirstDown()
+                            coroutineScope.launch {
+                                scaleAnim.animateTo(
+                                    targetValue = 0.96f,
+                                    animationSpec = spring(
+                                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                                        stiffness = Spring.StiffnessLow
+                                    )
+                                )
+                            }
+                            val up = waitForUpOrCancellation()
+                            coroutineScope.launch {
+                                scaleAnim.animateTo(
+                                    targetValue = 1f,
+                                    animationSpec = spring(
+                                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                                        stiffness = Spring.StiffnessMedium
+                                    )
+                                )
+                            }
+                            if (up != null) {
+                                onClick()
+                            }
+                        }
+                    }
+                } else Modifier
+            )
     ) {
-        // Specular top highlight gleam
-        Canvas(modifier = Modifier.fillMaxWidth().height(2.dp)) {
+        // Specular top highlight gleam (iPhone liquid glass reflection)
+        Canvas(modifier = Modifier.fillMaxWidth().height(2.5.dp)) {
             drawLine(
                 brush = Brush.horizontalGradient(
                     colors = listOf(
                         Color.Transparent,
-                        BerserkGlassHighlight.copy(alpha = 0.4f),
-                        BerserkCrimsonGlow.copy(alpha = 0.3f),
+                        BerserkGlassHighlight.copy(alpha = 0.45f),
+                        BerserkCrimsonGlow.copy(alpha = 0.4f),
                         Color.Transparent
                     )
                 ),
                 start = Offset.Zero,
                 end = Offset(size.width, 0f),
-                strokeWidth = 2f
+                strokeWidth = 2.5f
             )
         }
 
@@ -107,10 +165,10 @@ fun BrandOfSacrificeCanvas(
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "brand_pulse")
     val pulseAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.6f,
+        initialValue = 0.55f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1800, easing = FastOutSlowInEasing),
+            animation = tween(1600, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "pulseAlpha"
@@ -126,8 +184,8 @@ fun BrandOfSacrificeCanvas(
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(
-                    glowColor.copy(alpha = 0.35f * pulseAlpha),
-                    glowColor.copy(alpha = 0.05f * pulseAlpha),
+                    glowColor.copy(alpha = 0.38f * pulseAlpha),
+                    glowColor.copy(alpha = 0.08f * pulseAlpha),
                     Color.Transparent
                 ),
                 center = Offset(cx, cy),
@@ -144,7 +202,6 @@ fun BrandOfSacrificeCanvas(
 
         val strokeWidth = 3.2.dp.toPx()
         val cap = StrokeCap.Round
-        val stroke = Stroke(width = strokeWidth, cap = cap, join = StrokeJoin.Round)
 
         // Central vertical blade/spine
         drawLine(
@@ -216,9 +273,13 @@ fun LiquidArcGauge(
     barColor: Color = BerserkBloodRed,
     trackColor: Color = Color(0x3337474F)
 ) {
+    // Smooth fluid spring animation like Apple Watch / iPhone activity rings
     val animatedPercent by animateFloatAsState(
         targetValue = percentage.coerceIn(0f, 100f),
-        animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
         label = "gaugeAnim"
     )
 
@@ -244,13 +305,13 @@ fun LiquidArcGauge(
                 style = Stroke(width = strokeW, cap = StrokeCap.Round)
             )
 
-            // Active Progress
+            // Active Progress with glowing sweep
             val currentSweep = (animatedPercent / 100f) * sweepAngle
             if (currentSweep > 0) {
                 drawArc(
                     brush = Brush.sweepGradient(
                         colors = listOf(
-                            barColor.copy(alpha = 0.8f),
+                            barColor.copy(alpha = 0.85f),
                             BerserkCrimsonGlow,
                             BerserkBehelitGold,
                             barColor
@@ -378,24 +439,35 @@ fun BerserkDetailRow(
 fun BerserkAtmosphericBackground(
     content: @Composable BoxScope.() -> Unit
 ) {
+    val infiniteTransition = rememberInfiniteTransition(label = "ambient_glow")
+    val glowPulse by infiniteTransition.animateFloat(
+        initialValue = 0.18f,
+        targetValue = 0.32f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(4500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glowPulse"
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(BerserkObsidian)
             .drawBehind {
-                // Blood moon eclipse gradient at top center
+                // Animated blood moon eclipse ambient radial gradient at top center
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            Color(0x28B71C1C),
-                            Color(0x10FF1744),
+                            Color(0xFFB71C1C).copy(alpha = glowPulse),
+                            Color(0xFFFF1744).copy(alpha = glowPulse * 0.45f),
                             Color.Transparent
                         ),
                         center = Offset(size.width * 0.5f, 0f),
-                        radius = size.width * 0.85f
+                        radius = size.width * 0.90f
                     )
                 )
-                // Bottom subtle slate ambient glow
+                // Bottom subtle armor slate ambient glow
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(

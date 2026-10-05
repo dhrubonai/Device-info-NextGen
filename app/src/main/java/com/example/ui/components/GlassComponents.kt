@@ -41,6 +41,36 @@ fun Modifier.iphoneBounce(onClick: (() -> Unit)? = null): Modifier = this.then(
     }
 )
 
+// Subtle liquid parallax scroll animation for glass cards
+fun Modifier.liquidParallaxScroll(
+    index: Int,
+    lazyListState: androidx.compose.foundation.lazy.LazyListState,
+    speedFactor: Float = 0.05f,
+    tiltFactor: Float = 2.0f
+): Modifier = this.graphicsLayer {
+    val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.find { it.index == index }
+    if (itemInfo != null) {
+        val viewportHeight = lazyListState.layoutInfo.viewportSize.height.toFloat()
+        if (viewportHeight > 0f) {
+            val itemCenter = itemInfo.offset + itemInfo.size / 2f
+            val viewportCenter = viewportHeight / 2f
+            val distanceFromCenter = itemCenter - viewportCenter
+            val normalizedDist = (distanceFromCenter / viewportHeight).coerceIn(-1f, 1f)
+
+            // Subtle parallax vertical translation
+            translationY = distanceFromCenter * speedFactor
+
+            // 3D perspective tilt as the card travels past the eye
+            rotationX = -normalizedDist * tiltFactor
+
+            // Dynamic subtle scale breathing for liquid glass depth
+            val scale = (1f - kotlin.math.abs(normalizedDist) * 0.02f).coerceIn(0.97f, 1f)
+            scaleX = scale
+            scaleY = scale
+        }
+    }
+}
+
 @Composable
 fun LiquidGlassCard(
     modifier: Modifier = Modifier,

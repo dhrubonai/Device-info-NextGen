@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -38,7 +39,10 @@ fun DashboardScreen(
     onCopy: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+
     LazyColumn(
+        state = listState,
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
@@ -50,6 +54,7 @@ fun DashboardScreen(
             LiquidGlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .liquidParallaxScroll(index = 0, lazyListState = listState, speedFactor = 0.035f, tiltFactor = 1.6f)
                     .testTag("dashboard_hero_card"),
                 cornerRadius = 24.dp
             ) {
@@ -57,7 +62,7 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // App Logo Art from user's provided image
+                    // App Logo Art from user's provided exact Google Drive image
                     Box(
                         modifier = Modifier
                             .size(74.dp)
@@ -160,7 +165,9 @@ fun DashboardScreen(
         // Dual Liquid Gauges (RAM & Storage)
         item {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .liquidParallaxScroll(index = 1, lazyListState = listState, speedFactor = 0.05f, tiltFactor = 2.0f),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 val ramUsedMb = memoryInfo.usedRamBytes / (1024 * 1024)
@@ -210,6 +217,7 @@ fun DashboardScreen(
             LiquidGlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .liquidParallaxScroll(index = 2, lazyListState = listState, speedFactor = 0.055f, tiltFactor = 2.2f)
                     .testTag("dashboard_battery_card")
             ) {
                 Row(
@@ -277,6 +285,7 @@ fun DashboardScreen(
             LiquidGlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .liquidParallaxScroll(index = 3, lazyListState = listState, speedFactor = 0.05f, tiltFactor = 2.0f)
                     .testTag("dashboard_cpu_card")
             ) {
                 Row(
@@ -337,7 +346,11 @@ fun DashboardScreen(
 
         // Hardware Highlights List
         item {
-            LiquidGlassCard(modifier = Modifier.fillMaxWidth()) {
+            LiquidGlassCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .liquidParallaxScroll(index = 4, lazyListState = listState, speedFactor = 0.06f, tiltFactor = 2.2f)
+            ) {
                 Text(
                     text = "DEVICE STATUS & SPECIFICATIONS",
                     style = MaterialTheme.typography.labelMedium.copy(
@@ -350,43 +363,86 @@ fun DashboardScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 BerserkDetailRow(
-                    title = "BASEBAND & RADIO",
-                    value = generalInfo.radioVersion,
-                    icon = Icons.Default.CellTower,
-                    onCopy = { onCopy("Radio", generalInfo.radioVersion) }
-                )
-                HorizontalDivider(color = Color(0x1FFFFFFF), thickness = 0.5.dp)
-
-                BerserkDetailRow(
-                    title = "BOARD & HARDWARE",
-                    value = "${generalInfo.board} / ${generalInfo.hardware}",
+                    title = "Board & Hardware",
+                    value = "${generalInfo.board} (${generalInfo.hardware})",
                     icon = Icons.Default.DeveloperBoard,
-                    onCopy = { onCopy("Hardware", "${generalInfo.board} / ${generalInfo.hardware}") }
+                    onCopy = { onCopy("Board & Hardware", "${generalInfo.board} (${generalInfo.hardware})") }
                 )
-                HorizontalDivider(color = Color(0x1FFFFFFF), thickness = 0.5.dp)
 
                 BerserkDetailRow(
-                    title = "DISPLAY RESOLUTION",
-                    value = "${displayInfo.widthPixels} x ${displayInfo.heightPixels} (~${displayInfo.physicalSizeInches}\")",
-                    icon = Icons.Default.Smartphone,
-                    onCopy = { onCopy("Display", "${displayInfo.widthPixels}x${displayInfo.heightPixels}") }
+                    title = "Display Matrix",
+                    value = "${displayInfo.widthPixels}x${displayInfo.heightPixels} • ${displayInfo.densityDpi} DPI (${displayInfo.densityBucket})",
+                    icon = Icons.Default.Tv,
+                    onCopy = { onCopy("Display Matrix", "${displayInfo.widthPixels}x${displayInfo.heightPixels} • ${displayInfo.densityDpi} DPI") }
                 )
-                HorizontalDivider(color = Color(0x1FFFFFFF), thickness = 0.5.dp)
 
                 BerserkDetailRow(
-                    title = "KERNEL ARCHITECTURE",
-                    value = generalInfo.kernelVersion,
-                    icon = Icons.Default.Terminal,
-                    onCopy = { onCopy("Kernel", generalInfo.kernelVersion) }
-                )
-                HorizontalDivider(color = Color(0x1FFFFFFF), thickness = 0.5.dp)
-
-                BerserkDetailRow(
-                    title = "BUILD FINGERPRINT",
-                    value = generalInfo.fingerprint,
+                    title = "Android Build Fingerprint",
+                    value = generalInfo.fingerprint.take(36) + "...",
                     icon = Icons.Default.Fingerprint,
                     onCopy = { onCopy("Fingerprint", generalInfo.fingerprint) }
                 )
+
+                BerserkDetailRow(
+                    title = "Kernel & Security Status",
+                    value = "${generalInfo.kernelVersion.take(24)}... • ${generalInfo.securityStatus}",
+                    icon = Icons.Default.Build,
+                    onCopy = { onCopy("Kernel Version", generalInfo.kernelVersion) }
+                )
+            }
+        }
+
+        // Navigation Quick Portals
+        item {
+            LiquidGlassCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .liquidParallaxScroll(index = 5, lazyListState = listState, speedFactor = 0.04f, tiltFactor = 1.8f)
+            ) {
+                Text(
+                    text = "ASTRAL GATEWAYS",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontFamily = CinzelFontFamily,
+                        color = BerserkBehelitGold,
+                        letterSpacing = 1.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    PortalButton(
+                        label = "Sensors",
+                        icon = Icons.Default.Explore,
+                        color = BerserkCyanPulse,
+                        modifier = Modifier.weight(1f),
+                        onClick = { onNavigateTab(NavTab.SENSORS) }
+                    )
+                    PortalButton(
+                        label = "Diagnostics",
+                        icon = Icons.Default.Speed,
+                        color = BerserkBloodRed,
+                        modifier = Modifier.weight(1f),
+                        onClick = { onNavigateTab(NavTab.TESTS) }
+                    )
+                    PortalButton(
+                        label = "Network",
+                        icon = Icons.Default.Wifi,
+                        color = BerserkEmeraldSafe,
+                        modifier = Modifier.weight(1f),
+                        onClick = { onNavigateTab(NavTab.NETWORK) }
+                    )
+                    PortalButton(
+                        label = "Sacred Codex",
+                        icon = Icons.Default.Info,
+                        color = BerserkBehelitGold,
+                        modifier = Modifier.weight(1f),
+                        onClick = { onNavigateTab(NavTab.APP_INFO) }
+                    )
+                }
             }
         }
     }
@@ -394,29 +450,66 @@ fun DashboardScreen(
 
 @Composable
 private fun QuickBadge(label: String, value: String) {
-    Box(
+    Column(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0x2B37474F))
-            .padding(horizontal = 8.dp, vertical = 6.dp)
+            .background(Color(0x22FFFFFF))
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = CinzelFontFamily,
+                color = BerserkSteelDim,
+                fontSize = 9.sp,
+                letterSpacing = 0.5.sp
+            )
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontFamily = RajdhaniFontFamily,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 11.sp
+            )
+        )
+    }
+}
+
+@Composable
+private fun PortalButton(
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    color: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(54.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = color.copy(alpha = 0.22f)),
+        shape = RoundedCornerShape(12.dp),
+        contentPadding = PaddingValues(4.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = color,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontFamily = CinzelFontFamily,
-                    fontSize = 8.sp,
-                    color = BerserkSteelDim
-                )
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontFamily = RajdhaniFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 11.sp,
-                    color = Color.White
-                )
+                fontFamily = RajdhaniFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 11.sp,
+                color = Color.White
             )
         }
     }

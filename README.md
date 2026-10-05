@@ -6,6 +6,10 @@
 [![License: Open Source Attribution](https://img.shields.io/badge/License-Attribution%20Open%20Source-crimson.svg)](./LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/dhrubonai/Device-info-NextGen?style=social)](https://github.com/dhrubonai/Device-info-NextGen)
 
+<p align="center">
+  <img src="./assets/poster.png" alt="Device Info NextGen — Berserk Edition Poster" width="100%" />
+</p>
+
 > *"In this world, is the destiny of mankind controlled by some transcendental entity or law? Like the hand of God hovering above?"*
 
 **Device Info NextGen** is a high-performance Android hardware and diagnostics application enveloped in a dark fantasy **Berserk anime aesthetic**. Featuring **liquid glassmorphism surfaces**, fluid iOS-style spring animations, glowing crimson Brand of Sacrifice runes, and dual bespoke typography (*Cinzel* paired with tactical cybernetic *Rajdhani*).
@@ -15,7 +19,7 @@
 ## 👨‍💻 Creator & Developer
 
 <div align="center">
-  <img src="https://i.ibb.co/hRSzrw2N/file-69.jpg" width="160" height="213" style="border-radius: 50%; border: 3px solid #FF1744;" alt="Mohiuddin Abdul Kadir Dhrubo" />
+  <img src="./assets/developer.jpg" width="160" height="160" style="border-radius: 50%; border: 3px solid #FF1744; object-fit: cover;" alt="Mohiuddin Abdul Kadir Dhrubo" />
   <h3>Mohiuddin Abdul Kadir Dhrubo</h3>
   <p><b>Creator of Device Info NextGen</b></p>
 </div>

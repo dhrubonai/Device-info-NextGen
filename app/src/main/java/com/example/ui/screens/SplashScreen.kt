@@ -1,12 +1,10 @@
 package com.example.ui.screens
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,8 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -30,8 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.R
-import com.example.ui.theme.CinzelFontFamily
-import com.example.ui.theme.RajdhaniFontFamily
 import kotlinx.coroutines.delay
 
 @Composable
@@ -58,85 +52,29 @@ fun BerserkSplashScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color(0xFFFCFCFC))
             .clickable { onSplashFinished() } // Tap to skip
             .testTag("splash_screen_root")
     ) {
-        // Top-left and bottom-right decorative ink splatters
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val w = size.width
-            val h = size.height
+        // Full splash screen artwork containing authentic sumi-e ink corners and Guts framed portrait
+        Image(
+            painter = painterResource(id = R.drawable.berserk_splash_screen_full),
+            contentDescription = "Berserk NextGen Splash",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+        )
 
-            // Top-left sumi-e ink streaks
-            drawCircle(Color.Black, radius = 22.dp.toPx(), center = Offset(10.dp.toPx(), 20.dp.toPx()))
-            drawCircle(Color.Black, radius = 14.dp.toPx(), center = Offset(35.dp.toPx(), 45.dp.toPx()))
-            drawCircle(Color.Black, radius = 8.dp.toPx(), center = Offset(60.dp.toPx(), 30.dp.toPx()))
-            drawCircle(Color.Black, radius = 5.dp.toPx(), center = Offset(80.dp.toPx(), 15.dp.toPx()))
-            drawLine(
-                Color.Black,
-                start = Offset(-20f, -20f),
-                end = Offset(110.dp.toPx(), 80.dp.toPx()),
-                strokeWidth = 18.dp.toPx(),
-                cap = StrokeCap.Round
-            )
-            drawLine(
-                Color.Black,
-                start = Offset(-10f, 60.dp.toPx()),
-                end = Offset(70.dp.toPx(), 120.dp.toPx()),
-                strokeWidth = 6.dp.toPx(),
-                cap = StrokeCap.Round
-            )
-
-            // Bottom-right sumi-e ink streaks
-            drawCircle(Color.Black, radius = 24.dp.toPx(), center = Offset(w - 15.dp.toPx(), h - 25.dp.toPx()))
-            drawCircle(Color.Black, radius = 16.dp.toPx(), center = Offset(w - 40.dp.toPx(), h - 50.dp.toPx()))
-            drawCircle(Color.Black, radius = 9.dp.toPx(), center = Offset(w - 70.dp.toPx(), h - 35.dp.toPx()))
-            drawLine(
-                Color.Black,
-                start = Offset(w + 20f, h + 20f),
-                end = Offset(w - 120.dp.toPx(), h - 90.dp.toPx()),
-                strokeWidth = 20.dp.toPx(),
-                cap = StrokeCap.Round
-            )
-            drawLine(
-                Color.Black,
-                start = Offset(w - 40.dp.toPx(), h + 10f),
-                end = Offset(w - 100.dp.toPx(), h - 140.dp.toPx()),
-                strokeWidth = 8.dp.toPx(),
-                cap = StrokeCap.Round
-            )
-        }
-
-        // Center Content Stack matching user's splash image exactly
+        // Overlay Content Stack: Typography & Dynamic Animated Spinner
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
                 .statusBarsPadding()
                 .navigationBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.weight(0.7f))
-
-            // Framed Guts Smiling Manga Panel
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.92f)
-                    .aspectRatio(1.15f)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(Color.White),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.berserk_splash_art),
-                    contentDescription = "Berserk Guts Splash",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
-            }
-
-            Spacer(modifier = Modifier.height(28.dp))
+            // Space pushing down past Guts framed artwork and Japanese ベルセルク title
+            Spacer(modifier = Modifier.weight(1.35f))
 
             // "Device info" Header
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -145,8 +83,8 @@ fun BerserkSplashScreen(
                     style = MaterialTheme.typography.displayMedium.copy(
                         fontFamily = FontFamily.SansSerif,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF111111),
-                        fontSize = 34.sp,
+                        color = Color(0xFF0F0F0F),
+                        fontSize = 38.sp,
                         letterSpacing = (-0.5).sp
                     )
                 )
@@ -155,8 +93,8 @@ fun BerserkSplashScreen(
                     style = MaterialTheme.typography.displayMedium.copy(
                         fontFamily = FontFamily.SansSerif,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF616161),
-                        fontSize = 34.sp,
+                        color = Color(0xFF666666),
+                        fontSize = 38.sp,
                         letterSpacing = (-0.5).sp
                     )
                 )
@@ -169,7 +107,7 @@ fun BerserkSplashScreen(
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF1E1E1E),
-                    fontSize = 17.sp,
+                    fontSize = 18.sp,
                     letterSpacing = 2.sp
                 ),
                 modifier = Modifier.padding(top = 4.dp)
@@ -178,8 +116,8 @@ fun BerserkSplashScreen(
             // Divider Dash
             Box(
                 modifier = Modifier
-                    .padding(vertical = 14.dp)
-                    .width(28.dp)
+                    .padding(vertical = 12.dp)
+                    .width(32.dp)
                     .height(3.5.dp)
                     .clip(RoundedCornerShape(2.dp))
                     .background(Color(0xFF222222))
@@ -191,24 +129,24 @@ fun BerserkSplashScreen(
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF555555),
-                    fontSize = 13.sp,
-                    lineHeight = 19.sp,
+                    color = Color(0xFF4B4B4B),
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
                     textAlign = TextAlign.Center
                 )
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.55f))
 
-            // Circular Spinner Ring matching user's image
+            // Circular Spinner Ring matching user's image exactly
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(40.dp)
                     .rotate(rotation),
                 contentAlignment = Alignment.Center
             ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    val strokeW = 3.5.dp.toPx()
+                androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                    val strokeW = 4.dp.toPx()
                     drawArc(
                         brush = Brush.sweepGradient(
                             listOf(
@@ -218,7 +156,7 @@ fun BerserkSplashScreen(
                             )
                         ),
                         startAngle = 0f,
-                        sweepAngle = 280f,
+                        sweepAngle = 290f,
                         useCenter = false,
                         style = Stroke(width = strokeW, cap = StrokeCap.Round)
                     )
@@ -233,12 +171,12 @@ fun BerserkSplashScreen(
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Medium,
                     color = Color(0xFF757575),
-                    fontSize = 12.sp,
+                    fontSize = 13.sp,
                     letterSpacing = 1.sp
                 )
             )
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(36.dp))
         }
     }
 }

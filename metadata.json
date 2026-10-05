@@ -1,0 +1,6 @@
+{
+  "name": "Device Info NextGen",
+  "description": "Premium Berserk anime themed Android device info, hardware diagnostics, and real-time sensor monitor with liquid glass UI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
